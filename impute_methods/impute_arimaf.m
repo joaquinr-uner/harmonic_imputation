@@ -7,32 +7,21 @@ function [s_imp] = impute_arimaf(s,st,L,params)
 %         L: lengths of missing data intervals.
 %         params: optional parameters struct. Includes:
 %                 cycl: number of cycles used to fit ARIMA model
-%                 b: harmonic reconstruction half-width
-%                 sigma: STFT gaussian window length
 %                 fmax: maximum STFT frequency, as proportion of sampling
 %                 frequency.
+%                 sigma: window parameter for STFT
 % Outputs:
 %         s_imp: signal with imputed values.
 if nargin<4
     cycl = 3;
-    sigma = compute_sigma(s,2);
-    b = round(sqrt(log(80)*sigma/pi^2)*length(s)) + 1;
     fmax = 0.5;
+    redun = 1;
+    opoptions = optimoptions('fmincon');
 else
     if isfield(params,'cycl')
         cycl = params.cycl;
     else
         cycl = 3;
-    end
-    if isfield(params,'sigma')
-        sigma = params.sigma;
-    else
-        sigma = compute_sigma(s,1);
-    end
-    if isfield(params,'b')
-        b = params.b;
-    else
-        b = round(sqrt(log(80)*sigma/pi^2)*length(s)) + 1;
     end
     if isfield(params,'fmax')
         fmax = params.fmax;
@@ -44,19 +33,36 @@ else
     else
         redun = 1;
     end
+    if isfield(params,'options')
+        opoptions = params.options;
+    else
+        opoptions = optimoptions('fmincon');
+    end
+    if isfield(params,'sigma')
+        sigma = params.sigma;
+    else
+        sigma = 0;
+    end
 end
 s = s(:);
 
 Ni = length(st);
 
 s_imp = s;
-
+intp = 0;
 for qi=1:Ni
 
     inti = st(qi):st(qi)+L(qi)-1;
 
     %sp = s_imp(1:inti(1)-1);
     sp = s_imp(intp(end)+1:inti(1)-1);
+    
+    if sigma==0
+        sigma = compute_sigma(sp,1);
+    end
+    
+    b = round(3/pi*sqrt(sigma/2)*length(sp));
+    b = b*redun;
 
     [Ff,sFf] = STFT_Gauss(sp,length(sp)*redun,sigma,fmax);
 
@@ -67,8 +73,8 @@ for qi=1:Ni
     %phif = phif/redun;
     Np = L(qi);
 
-    ext_arima = extendSig(sp,phif,cycl,Np,'fw');
+    ext_arima = extendSig(sp,phif,cycl,Np,'fw',opoptions);
 
-    s_imp(inti) = ext_arima;
+    s_imp(inti) = ext_arima(end-Np+1:end);
     intp = inti;
 end

@@ -6,22 +6,26 @@ function [s_imp] = impute_tlm(s,st,L,params)
 %         st: initial indexes of missing data intervals.
 %         L: lengths of missing data intervals.
 %         params: optional params struct. Includes:
-%                   d: left and right fitting patterns length.
+%                   k: left and right fitting patterns length parameter.
 % Outputs:
 %         s_imp: signal with imputed values.
 if nargin<4
     X = fft(s);
     N = length(s);
     [~,indf] = max(abs(X).^2);
-    d = round(1/indf*N);
+    d = round(2/indf*N);
 else
-    if isfield(params,'d')
-        d = params.d;
+    if isfield(params,'k')
+        k = params.k;
+        X = fft(s);
+        [~,indf] = max(abs(X).^2);
+        N = length(s);
+        d = round(k/indf*N);
     else
         X = fft(s);
         [~,indf] = max(abs(X).^2);
         N = length(s);
-        d = round(1/indf*N);
+        d = round(2/indf*N);
     end
 end
 

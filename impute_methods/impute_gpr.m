@@ -15,20 +15,28 @@ function [s_imp] = impute_gpr(s,st,L,params)
 % Outputs:
 %         s_imp: signal with imputed values.
 if nargin<4
-    M = round(1*L);
-    K = round(1.5*M);
+    K = 0;
+    M = 0;
     fmode = 'sd';
     pmode = 'bcd';
+    %M = round(1*L);
+    %K = round(1.5*M);
 else
     if isfield(params,'M')
         M = params.M;
+        if length(M)==1
+            M = M*ones(1,length(L));
+        end
     else
-        M = round(1*L);
+        M = zeros(1,length(L));
     end
     if isfield(params,'K')
         K = params.K;
+        if length(K)==1
+            K = K*ones(1,length(L));
+        end
     else
-        K = round(1.5*M);
+        K = round(2.5*M);
     end
     if isfield(params,'fmode')
         fmode = params.fmode;
@@ -50,14 +58,21 @@ Ni = length(st);
 
 s_imp = s;
 
+intp = 0;
 for qi=1:Ni
+    inti = st(qi):st(qi)+L(qi)-1;
+    sp = s_imp(intp(end)+1:inti(1)-1);
+
     Ki = K(qi);
     Mi = M(qi);
-
-    inti = st(qi):st(qi)+L(qi)-1;
+    if Ki==0
+        [~,fh] = compute_sigma(sp,1);
+        Th = length(sp)/fh;
+        Mi = floor(0.9*Th);
+        Ki = ceil(3*Th);
+    end
 
     %sp = s_imp(1:inti(1)-1);
-    sp = s_imp(intp(end)+1:inti(1)-1);
 
     X = zeros(Mi,Ki) ;
     for k = 1: Ki
