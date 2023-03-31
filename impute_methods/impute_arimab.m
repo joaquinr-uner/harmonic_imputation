@@ -16,6 +16,7 @@ if nargin<4
     cycl = 3;
     fmax = 0.5;
     redun = 1;
+    opoptions = optimoptions('fmincon');
 else
     if isfield(params,'cycl')
         cycl = params.cycl;
