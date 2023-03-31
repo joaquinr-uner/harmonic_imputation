@@ -11,15 +11,15 @@ This toolbox includes the functions to implement the missing data imputation bas
 
 The main functions included in this module are briefly described below. Refer to the functions documentation for details about input and output argument usage.
 
-missing_ints :
+missing_ints : Automatically detect the location and length of the missing data intervals.
 
-impute : 
+impute : Perform initial imputation using one of the implemented method or pass-by-reference your own imputation method. The passed method has to respect the input-output scheme of the implemented methods.
 
-harm_decomp : 
+harm_decomp : Run the harmonic decomposition algorithm on the imputed signal.
 
-harm_int : 
+harm_int : Interpolate at the harmonic level using one of the two possible interpolation schemes: 'spline' or 'pchip'.
 
-impute_harm_int : 
+impute_harm_int : Global functions that runs all steps of the algorithm sequentially. Flags can be set to only run the initial imputation result.
 
 
 
