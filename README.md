@@ -11,7 +11,7 @@ This toolbox includes the functions to implement the missing data imputation bas
 
 The main functions included in this module are briefly described below. Refer to the functions documentation for details about input and output argument usage.
 
-missing_ints : Automatically detect the location and length of the missing data intervals.
+<code> missing_ints </code>: Automatically detect the location and length of the missing data intervals.
 
 impute : Perform initial imputation using one of the implemented method or pass-by-reference your own imputation method. The passed method has to respect the input-output scheme of the implemented methods.
 
