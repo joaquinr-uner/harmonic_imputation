@@ -37,7 +37,7 @@ if sum(ismember(msplt,'fw'))
     %indfw = find(phi>phi(end)-c,1);
     %estInd = (indfw:N)';
     Seas1 = round(median(pw(end-c+1:end)));
-    estInd = (N-floor(3.1*Seas1):N)';
+    estInd = (N-floor(1.1*c*Seas1):N)';
 
     Mdlfw = regARIMA('D',0,'Seasonality',Seas1,'MALags',c,'SMALags',Seas1,'Intercept',0);
     Mdlfwest = estimate(Mdlfw,s(estInd),'X',estInd,'Display','off','Options',opoptions);
@@ -51,7 +51,7 @@ if sum(ismember(msplt,'bw'))
     Seas2 = round(median(pw(1:c)));
     sbk = flipud(s);
 
-    estIndbk = (N-floor(3.1*Seas2):N)';
+    estIndbk = (N-floor(1.1*c*Seas2):N)';
 
     Mdlbk = regARIMA('D',0,'Seasonality',Seas2,'MALags',c,'SMALags',Seas2,'Intercept',0);
     Mdlbkest = estimate(Mdlbk,sbk(estIndbk),'X',estIndbk,'Display','off','Options',opoptions);
