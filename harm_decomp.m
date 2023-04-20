@@ -1,4 +1,4 @@
-function [AD,phiD,TFdata] = harm_decomp(x,params)
+function [AD,phiD,Trend,TFdata] = harm_decomp(x,params)
 %%
 % Compute the harmonic decomposition of signal x.
 % Inputs: 
@@ -19,8 +19,9 @@ function [AD,phiD,TFdata] = harm_decomp(x,params)
 %                       When 'Criteria' == 'Kavalieris': maximum order H.
 %                       When 'Criteria' == 'Rl': noise variance estimate
 %                       sigma.
-
-if nargin<3
+%                'with_trend': logical variable to indicate if the signal trend
+%                has to be recovered. 
+if nargin<2
     sigma = compute_sigma(x,1);
     %b = round(sqrt(log(80)*sigma/pi^2)*length(x)) + 1;
     b = round(3/pi*sqrt(sigma/2)*length(x));
@@ -28,6 +29,7 @@ if nargin<3
     r_max = 50;
     crit = {'Wang'};
     crit_params = struct('c',[4,6,8,10,12]);
+    with_trend = 0;
 else
     if isfield(params,'sigma')
         sigma = params.sigma;
@@ -44,6 +46,11 @@ else
         fmax = params.fmax;
     else
         fmax = 0.5;
+    end
+    if isfield(params,'with_trend')
+        with_trend = params.with_trend;
+    else
+        with_trend = 0;
     end
     if isfield(params,'r_max')
         r_max = params.r_max;
@@ -68,8 +75,10 @@ N = length(x);
 [F,sF] = STFT_Gauss(x,N,sigma,fmax);
 
 c = ridge_ext(F,0.1,0.1,10,10);
-if r_max == 0
-    r_max = floor(0.5*N/max(c));
+r_max = floor(0.5*N/max(c));
+
+if r_max>50
+    r_max = 50;
 end
 
 if (max(c)<0.5*N)&&(sum(c==0)==0)
@@ -86,9 +95,15 @@ else
     phiD = nan;
 end
 
-    TFdata.F = F;
-    TFdata.sigma = sigma;
-    TFdata.fmax = fmax;
-    TFdata.c = c;
-    TFdata.b = b;
+if with_trend
+    Trend = real(2/max(sF)*sum(F(1:c-2*b,:)));
+else
+    Trend = zeros(1,N);
+end
+
+TFdata.F = F;
+TFdata.sigma = sigma;
+TFdata.fmax = fmax;
+TFdata.c = c;
+TFdata.b = b;
 end
