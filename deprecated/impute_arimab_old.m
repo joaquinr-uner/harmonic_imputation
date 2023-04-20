@@ -17,7 +17,6 @@ if nargin<4
     fmax = 0.5;
     redun = 1;
     opoptions = optimoptions('fmincon');
-    sigma = 0;
 else
     if isfield(params,'cycl')
         cycl = params.cycl;
@@ -50,27 +49,22 @@ s = s(:);
 N = length(s);
 Ni = length(st);
 
-s = flipud(s);
-
 s_imp = s;
 
-stf = fliplr(N-st-L+2);
-Lf = fliplr(L);
-intp = 0;
-for qi=1:Ni
+endh = N;
+for qi=Ni:-1:1
 
-    inti = stf(qi):stf(qi)+Lf(qi)-1;
+    inti = st(qi):st(qi)+L(qi)-1;
 
     %sp = s_imp(1:inti(1)-1);
-    sp = s_imp(intp(end)+1:inti(1)-1);
-    
-    if sigma==0
+    sp = s_imp(st(qi)+L(qi)+1:endh);
+
+    if sigma ==0
         sigma = compute_sigma(sp,1);
     end
-    
     b = round(3/pi*sqrt(sigma/2)*length(sp));
     b = b*redun;
-
+    
     [Ff,sFf] = STFT_Gauss(sp,length(sp)*redun,sigma,fmax);
 
     cf = ridge_ext(Ff,0.1,0.1,10,10);
@@ -78,12 +72,10 @@ for qi=1:Ni
     [~,phif] = extract_harmonics(Ff,sFf,cf,b,b,1);
 
     %phif = phif/redun;
-    Np = Lf(qi);
+    Np = L(qi);
 
-    ext_arima = extendSig(sp,phif,cycl,Np,'fw',opoptions);
+    ext_arima = extendSig(sp,phif,cycl,Np,'bw',opoptions);
 
-    s_imp(inti) = ext_arima(end-Np+1:end);
-    intp = inti;
+    s_imp(inti) = ext_arima(1:Np);
+    endh = st(qi)-1;
 end
-
-s_imp = flipud(s_imp);
