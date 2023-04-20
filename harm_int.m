@@ -1,4 +1,4 @@
-function [s_int, A_int, phi_int] = harm_int(A,phi,st,L,intp,s_imp)
+function [s_int, trend_int, A_int, phi_int] = harm_int(A,phi,st,L,intp,s_imp,trend)
 %%
 % Missing data imputation refinement by harmonic interpolation.
 % Inputs: 
@@ -12,10 +12,14 @@ function [s_int, A_int, phi_int] = harm_int(A,phi,st,L,intp,s_imp)
 %         s_int: signal with improved missing data imputation.
 %         A_int: interpolated harmonic amplitudes.
 %         phi_int: interpolated harmonic phases.
+
+if nargin< 7
+    trend = zeros(1,length(s_imp));
+end
+
 s_imp = s_imp(:);
 s_int = s_imp;
-A_int = A;
-phi_int = phi;
+trend_int = trend;
 
 N = length(s_imp);
 Ni = length(L);
@@ -32,7 +36,7 @@ for i=1:Ni
     A(:,sti:edi) = 0;
     phi(:,sti:edi) = 0;
     s_int(sti:edi) = 0;
-
+    trend(sti:edi) = 0;
     if i==1
         lint = 1:st(i)-1;
     else
@@ -56,11 +60,15 @@ for i=1:Ni
         phi(j,sti:edi) = phii(sti:edi);
         s_int(sti:edi) = s_int(sti:edi) + 2*A(j,sti:edi)'.*cos(2*pi*phi(j,sti:edi))';
 
-
     end
+    trendq = trend(xq);
 
-A_int = A;
-phi_int = phi;
+    trendi = interp1(xq,trendq,1:N,intp);
+    trend_int(sti:edi) = trendi(sti:edi);
+    s_int(sti:edi) = s_int(sti:edi) + trend_int(sti:edi)';
+end
+    A_int = A;
+    phi_int = phi;
 
 end
 
