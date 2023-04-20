@@ -27,8 +27,12 @@ switch fhmode
     case 1
         % fh as peak of the power spectrum
         [~,indf] = max(abs(X).^2);
-
-        fh = indf+1;
+        
+        if mod(N,2)
+            fh = indf;
+        else
+            fh = indf-1;
+        end
     case 2
         % fh as inverse of fundamental period from complex cepstrum
         C = cceps(x);
