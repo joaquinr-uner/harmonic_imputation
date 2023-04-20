@@ -16,6 +16,7 @@ for i=1:N
     bup = min([c(i)+h,K]);
     I = binf:bup;
     [~,aux] = max(abs(F(I,i)).^2);
+    %i
     cr(i) = aux + binf - 1;
 end
 
