@@ -15,8 +15,8 @@ function [s_imp] = impute_gpr(s,st,L,params)
 % Outputs:
 %         s_imp: signal with imputed values.
 if nargin<4
-    K = 0;
-    M = 0;
+    K = zeros(1,length(st));
+    M = zeros(1,length(st));
     fmode = 'sd';
     pmode = 'bcd';
     %M = round(1*L);

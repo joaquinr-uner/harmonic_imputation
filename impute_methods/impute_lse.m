@@ -50,8 +50,8 @@ for qi=1:Ni
     if Ki==0
         [~,fh] = compute_sigma(sp,1);
         Th = length(sp)/fh;
-        Mi = floor(0.9*Th);
-        Ki = ceil(3*Th);
+        Mi = floor(0.75*Th);
+        Ki = ceil(2.5*Th);
     end
 
     %sp = s_imp(1:inti(1)-1);
