@@ -30,6 +30,7 @@ if nargin<2
     crit = {'Wang'};
     crit_params = struct('c',[4,6,8,10,12]);
     with_trend = 0;
+    deshape = 0;
 else
     if isfield(params,'sigma')
         sigma = params.sigma;
@@ -51,6 +52,11 @@ else
         with_trend = params.with_trend;
     else
         with_trend = 0;
+    end
+    if isfield(params,'deshape')
+        deshape = params.deshape;
+    else
+        deshape = 0;
     end
     if isfield(params,'r_max')
         r_max = params.r_max;
@@ -74,7 +80,18 @@ N = length(x);
 
 [F,sF] = STFT_Gauss(x,N,sigma,fmax);
 
-c = ridge_ext(F,0.1,0.1,10,10);
+if deshape
+    f = 0:1/N:fmax-1/N;
+    U = istct_fast(F,f,0.3,0.03);
+
+    W = F.*U;
+    c = ridge_ext(W,0.1,0.1,10,10);
+    c = ridge_correct(c,F,b,1);
+else
+    c = ridge_ext(F,0.1,0.1,10,10);
+end
+
+    
 r_max = floor(0.5*N/max(c));
 
 if r_max>50

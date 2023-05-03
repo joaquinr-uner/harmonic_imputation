@@ -62,7 +62,7 @@ for qi=1:Ni
     inti = stf(qi):stf(qi)+Lf(qi)-1;
 
     %sp = s_imp(1:inti(1)-1);
-    sp = s_imp(intp(end)+1:inti(1)-1);
+    sp = s(intp(end)+1:inti(1)-1);
     
     if sigma==0
         sigma = compute_sigma(sp,1);
@@ -71,9 +71,13 @@ for qi=1:Ni
     b = round(3/pi*sqrt(sigma/2)*length(sp));
     b = b*redun;
 
-    [Ff,sFf] = STFT_Gauss(sp,length(sp)*redun,sigma,fmax);
-
-    cf = ridge_ext(Ff,0.1,0.1,10,10);
+    ff = 0:1/length(sp):0.5-1/length(sp);
+    [Ff,sFf] = STFT_Gauss(sp,length(sp)*redun,sigma,0.5);
+    Uf = istct_fast(Ff,ff,0.3,0.03);
+    Wf = Ff.*Uf;
+    
+    cf = ridge_ext(Wf,0.1,0.1,10,10);
+    cf = ridge_correct(cf,Ff,b,1);
 
     [~,phif] = extract_harmonics(Ff,sFf,cf,b,b,1);
 

@@ -56,7 +56,7 @@ else
     [st,L] = missing_ints(s,d,t);
 end
 
-s_imp = impute(s,st,L,'method',p.Results.ImpM,'params',p.Results.params_imp);
+s_imp = impute(s,st,L,p.Results.ImpM,p.Results.params_imp);
 
 if p.Results.Best== "on"
     mse_imp = zeros(1,size(s_imp));

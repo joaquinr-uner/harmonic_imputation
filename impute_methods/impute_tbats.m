@@ -27,11 +27,6 @@ else
     else
         T = 0;
     end
-    if isfield(params,'j')
-        j = params.j;
-    else
-        j = 0;
-    end
 end
 s = s(:);
 
@@ -49,14 +44,18 @@ for qi=1:Ni
     inti = st(qi):st(qi)+L(qi)-1;
 
     %sp = s_imp(1:inti(1)-1);
-    sp = s_imp(intp(end)+1:inti(1)-1);
+    sp = s(intp(end)+1:inti(1)-1);
 
     Np = length(sp);
     [sigma,~,b] = compute_sigma(sp);
 
+    ff = 0:1/length(sp):0.5-1/length(sp);
     [Ff,sFf] = STFT_Gauss(sp,Np,sigma,0.5);
+    Uf = istct_fast(Ff,ff,0.3,0.03);
+    Wf = Ff.*Uf;
 
-    cf = ridge_ext(Ff,0.1,0.1,10,10);
+    cf = ridge_ext(Wf,0.1,0.1,10,10);
+    cf = ridge_correct(cf,Ff,b,1);
 
     [~,phif] = extract_harmonics(Ff,sFf,cf,b,b,1);
 
@@ -64,9 +63,15 @@ for qi=1:Ni
     plocs = find(dwphi<-5);
     pw = diff(plocs);
     if T == 0
-        T = floor(median(pw(end-2:end)));
+        if length(pw)<3
+            T = floor(median(pw));
+            ind = sum(pw);
+        else
+            T = floor(median(pw(end-2:end)));
+            ind = Np-sum(pw(end-2:end)):Np;
+        end
     end
-    si = sp(end-sum(pw(end-3:end)):end);
+    si = sp(ind);
     Ni = length(si);
     sti = st(qi);
     Li = L(qi);

@@ -5,7 +5,8 @@ function [a1_c,a1_s,a0,IMF]=decompose_sparse(f,theta,theta_f,alpha)
  
  quiet=1;
 lambda=1e-1;
-[x,status]=l1_ls(basis_theta,f,lambda,1e-2,quiet);
+pcgmaxi = 15;
+[x,status]=l1_ls(basis_theta,f,lambda,1e-2,quiet,[],pcgmaxi);
 
  
  x0=x.*w;
@@ -17,7 +18,6 @@ xs=xc;
 
 xc(1)=x(2*nk);
 xs(1)=x(2*nk+1);
-
 for j=1:mk
     xc(2*j)=(x(2*(nk-j))+x(2*(nk+j)));
     xc(2*j+1)=(x(2*(nk+j)+1)-x(2*(nk-j)+1));

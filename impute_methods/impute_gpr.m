@@ -62,14 +62,22 @@ intp = 0;
 for qi=1:Ni
     inti = st(qi):st(qi)+L(qi)-1;
     sp = s_imp(intp(end)+1:inti(1)-1);
-
+    Np = length(sp);
     Ki = K(qi);
     Mi = M(qi);
     if Ki==0
         [~,fh] = compute_sigma(sp,1);
         Th = length(sp)/fh;
-        Mi = floor(0.9*Th);
-        Ki = ceil(3*Th);
+        %Mi = floor(0.9*Th);
+        %Ki = ceil(3*Th);
+        Mi = ceil(3*Th);
+        Ki = floor(2.5*Mi);
+
+    end
+
+    if Ki+Mi>Np
+        Ki = floor(0.7*Np);
+        Mi = floor(0.3*Np)-1;
     end
 
     %sp = s_imp(1:inti(1)-1);

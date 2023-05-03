@@ -13,7 +13,7 @@ function [s_imp] = impute_ddtfa(s,st,L,params)
 % Outputs:
 %         s_imp: signal with imputed values.
 if nargin<4
-    [A,~] = harm_decomp(s);
+    [A,~] = harm_decomp(s,struct('deshape',1));
     D = size(A,1);
     [~,fh] = compute_sigma(s);
     fs = length(s);
@@ -21,8 +21,8 @@ else
     if isfield(params,'D')
         D = params.D;
     else
-        [a,~] = harm_decomp(s(1:0.05*length(s)));
-        D = size(a,1);
+        [A,~] = harm_decomp(s);
+        D = size(A,1);
     end
     if isfield(params,'fs')
         fs = params.fs;
