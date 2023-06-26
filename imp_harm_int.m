@@ -1,4 +1,4 @@
-function [s_imp,s_int,bestM] = imp_harm_int(s,varargin)
+function [s_imp,trend_imp,s_int,trend_int,bestM] = imp_harm_int(s,varargin)
 %%
 % Compute the harmonic decomposition of signal x.
 % Inputs: 
@@ -76,14 +76,14 @@ if  lower(p.Results.Int) == "on"
     M = size(p.Results.IntM,2);
 
     s_int = zeros(M*K,length(s));
+    trend_int = zeros(M*K,length(s));
     for k=1:size(s_imp,1)
         si = s_imp(k,:)';
-        [AD,phiD] = harm_decomp(si, p.Results.params_decomp);
-
+        [AD,phiD,trend_imp] = harm_decomp(si, p.Results.params_decomp);
         for m=1:M
             intmm =  p.Results.IntM{m};
 
-            s_int((k-1)*M+m,:) = harm_int(AD,phiD,st,L,intmm,si);
+            [s_int((k-1)*M+m,:),trend_int((k-1)*M+m,:)] = harm_int(AD,phiD,st,L,intmm,si,trend_imp);
         end
     end
 end

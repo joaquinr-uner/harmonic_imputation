@@ -14,7 +14,7 @@ function [s_int, trend_int, A_int, phi_int] = harm_int(A,phi,st,L,intp,s_imp,tre
 %         phi_int: interpolated harmonic phases.
 
 if nargin< 7
-    trend = zeros(1,length(s_imp));
+    trend = zeros(size(s_imp));
 end
 
 s_imp = s_imp(:);
@@ -36,7 +36,7 @@ for i=1:Ni
     A(:,sti:edi) = 0;
     phi(:,sti:edi) = 0;
     s_int(sti:edi) = 0;
-    trend(sti:edi) = 0;
+    trend_int(sti:edi) = 0;
     if i==1
         lint = 1:st(i)-1;
     else
@@ -65,7 +65,8 @@ for i=1:Ni
 
     trendi = interp1(xq,trendq,1:N,intp);
     trend_int(sti:edi) = trendi(sti:edi);
-    s_int(sti:edi) = s_int(sti:edi) + trend_int(sti:edi)';
+    %trend_int(sti:edi) = trend(sti:edi);
+    s_int(sti:edi) = s_int(sti:edi) + trend_int(sti:edi);
 end
     A_int = A;
     phi_int = phi;
