@@ -168,6 +168,38 @@ else
                             fprintf(['Imputation completed by TBATS method. Time: ' num2str(t_imp(k)) '\n'])
                         end
                     end
+                case 'edmd'
+                    if nargin<5
+                        tic
+                        x_imp(k,:) = impute_edmd(x,st,L);
+                        t_imp(k) = toc;
+                        if verbose
+                            fprintf(['Imputation completed by EDMD method. Time: ' num2str(t_imp(k)) '\n'])
+                        end
+                    else
+                        tic
+                        x_imp(k,:) = impute_edmd(x,st,L,params{k});
+                        t_imp(k) = toc;
+                        if verbose
+                            fprintf(['Imputation completed by EDMD method. Time: ' num2str(t_imp(k)) '\n'])
+                        end
+                    end
+                case 'lsw'
+                    if nargin<5
+                        tic
+                        x_imp(k,:) = impute_lsw(x,st,L);
+                        t_imp(k) = toc;
+                        if verbose
+                            fprintf(['Imputation completed by LSW method. Time: ' num2str(t_imp(k)) '\n'])
+                        end
+                    else
+                        tic
+                        x_imp(k,:) = impute_lsw(x,st,L,params{k});
+                        t_imp(k) = toc;
+                        if verbose
+                            fprintf(['Imputation completed by LSW method. Time: ' num2str(t_imp(k)) '\n'])
+                        end
+                    end
                 otherwise
                     error(['Unknown imputation method: ' method{k}])
             end
