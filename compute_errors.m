@@ -16,7 +16,7 @@ N = length(t);
 Err_i = zeros(K,size(metric,1));
 Err = zeros(1,size(metric,1));
 for m=1:M
-    metr = metric{m};
+    metr = lower(metric{m});
 
     switch metr
         case 'mae'
