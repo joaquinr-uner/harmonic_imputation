@@ -1,7 +1,7 @@
 
 addpath(genpath('..'))
-N = 4000;
-fs = 2000;
+N = 8000;
+fs = 8000;
 rng(0)
 t = 0:1/fs:(N-1)/fs;
 phi = 50*t + 5/(2*pi)*cos(2*pi*t);
@@ -27,7 +27,7 @@ true = A.*x;
 
 true = true - mean(true);
 
-L = 800;
+L = 1600;
 
 true = true';
 SNR = Inf;
@@ -63,18 +63,21 @@ Th = N/fh;
 %K = floor(2.5*M);
 %M = floor(0.9*Th);
 %K = ceil(3*Th);
-%M = floor(3*Th);
-%K = floor(2.5*M);
-M = 0;K = 0;
+M = floor(3*Th);
+K = floor(2.5*M);
+%M = 0;K = 0;
 params = struct('M',M,'K',K);
+params_edmd = struct('M',M,'K',K,'sigma',100);
 imp_lse = impute_lse(x,sth,Lh,params);
 imp_dmd = impute_dmd(x,sth,Lh,params);
 imp_gpr = impute_gpr(x,sth,Lh,params);
+imp_edmd = impute_edmd(x,sth,Lh,params_edmd);
 
 errors_ref = compute_errors(true,x,sth,Lh,{'mae','mse','rmse','sim'});
 errors_lse = compute_errors(true,imp_lse,sth,Lh,{'mae','mse','rmse','sim'});
 errors_dmd = compute_errors(true,imp_dmd,sth,Lh,{'mae','mse','rmse','sim'});
 errors_gpr = compute_errors(true,imp_gpr,sth,Lh,{'mae','mse','rmse','sim'});
+errors_edmd = compute_errors(true,imp_edmd,sth,Lh,{'mae','mse','rmse','sim'});
 
 figure(1)
 subplot(221)
@@ -98,4 +101,12 @@ plot(t,x,'k--')
 plot(t,imp_gpr,'b-')
 hold off
 legend('true','missing','imputed GPR')
+hold off
+subplot(224)
+plot(t,true,'r-')
+hold on
+plot(t,x,'k--')
+plot(t,imp_edmd,'b-')
+hold off
+legend('true','missing','imputed EDMD')
 hold off
