@@ -12,20 +12,27 @@ function [s_imp] = impute_tlm(s,st,L,params)
 if nargin<4
     X = fft(s);
     N = length(s);
-    [~,indf] = max(abs(X).^2);
+    [~,indf] = max(abs(X(50:end/2).^2));
+    indf = indf + 50;
     d = round(2/indf*N);
 else
     if isfield(params,'k')
         k = params.k;
         X = fft(s);
-        [~,indf] = max(abs(X).^2);
+        [~,indf] = max(abs(X(50:end/2)).^2);
+        indf = indf + 50;
         N = length(s);
         d = round(k/indf*N);
     else
-        X = fft(s);
-        [~,indf] = max(abs(X).^2);
-        N = length(s);
-        d = round(2/indf*N);
+        if isfield(params,'d')
+            d = params.d;
+        else
+            X = fft(s);
+            [~,indf] = max(abs(X(50:end/2).^2));
+            indf = indf + 50;
+            N = length(s);
+            d = round(2/indf*N);
+        end
     end
 end
 
