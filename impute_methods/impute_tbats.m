@@ -20,7 +20,8 @@ else
     if isfield(params,'pn')
         pn = params.pn;
     else
-        pn = cd;
+        pn = mfilename('fullpath');
+        pn = [pn(1:end-13) '/aux-functs'];
     end
     if isfield(params,'T')
         T = params.T;
