@@ -9,7 +9,9 @@ function [AD,phiD,Trend,TFdata] = harm_decomp(x,params)
 %                 'b': half-width for harmonic reconstruction
 %                 'fmax': maximum frequency for the computation of the
 %                 STFT, a proportion of fs
-%                 'r_max': maximum admissible number of harmonics
+%                 'K': number of oscillatory components
+%                 'r_max': maximum admissible number of harmonic
+%                 'r_opt': chosen order for harmonic decomposition
 %                 'Criteria': string or cell with criteria for automatic
 %                 number of harmonic estimation.
 %                 'crit_params': Additional parameters for trigonometric
@@ -26,11 +28,12 @@ if nargin<2
     %b = round(sqrt(log(80)*sigma/pi^2)*length(x)) + 1;
     b = round(3/pi*sqrt(sigma/2)*length(x));
     fmax = 0.5;
-    r_max = 50;
     crit = {'Wang'};
     crit_params = struct('c',[4,6,8,10,12]);
     with_trend = 0;
-    deshape = 0;
+    Rmax = 50;
+    K = 1;
+    r_opt = 0;
 else
     if isfield(params,'sigma')
         sigma = params.sigma;
@@ -58,10 +61,10 @@ else
     else
         deshape = 0;
     end
-    if isfield(params,'r_max')
-        r_max = params.r_max;
+    if isfield(params,'Rmax')
+        Rmax = params.Rmax;
     else
-        r_max = 0;
+        Rmax = 50;
     end
     if isfield(params,'Criteria')
         if isa(params.Criteria,'char')
@@ -74,53 +77,92 @@ else
         crit = {'Wang'};
         crit_params = struct('c',[4,6,8,10,12]);
     end
+    if isfield(params,'K')
+        K = params.K;
+    else
+        K = 1;
+    end
+    if isfield(params,'r_opt')
+        K = params.r_opt;
+    else
+        r_opt = 0;
+    end
 end
 
 N = length(x);
 
+C = zeros(K,N);
+
+AD = [];
+phiD = [];
 [F,sF] = STFT_Gauss(x,N,sigma,fmax);
+f = 0:1/N:fmax-1/N;
+U = istct_fast(F,f,0.3,0.3);
 
-if deshape
-    f = 0:1/N:fmax-1/N;
-    U = istct_fast(F,f,0.3,0.03);
+W = F.*U;
+c = ridge_ext(W,0.1,0.1,10,10);
+cbl = max([ones(1,N);c-b]);
+cbu = min([N*ones(1,N);c+b]);
+W(cbl:cbu,:) = 0;
+C(1,:) = ridge_correct(c,F,b,1);
 
-    W = F.*U;
-    c = ridge_ext(W,0.1,0.1,10,10);
-    c = ridge_correct(c,F,b,1);
-else
-    c = ridge_ext(F,0.1,0.1,10,10);
-end
+for k=2:K
+    ck = ridge_ext(W(10:end,:),0.1,0.1,10,10);
+    ck = ck + 10;
 
-    
-r_max = floor(0.5*N/max(c));
-
-if r_max>50
-    r_max = 50;
-end
-
-if (max(c)<0.5*N)&&(sum(c==0)==0)
-    [A1,phi1] = extract_harmonics(F,sF,c,b,b,1);
-
-    r_opt = order_opt(x,r_max,A1,phi1,crit,crit_params);
-    if r_opt>r_max
-        r_opt = r_max;
+    C(k,:) = ridge_correct(ck,F,b,1);
+    if abs(median(C(k,:))-median(C(1,:)))<2*b % Check if detected ridge is a residual of c_1
+        K = K - 1;
+        C(k,:) = [];
     end
+end
 
-    [AD,phiD] = extract_harmonics(F,sF,c,b,b,r_opt);
-else
-    AD = nan;
-    phiD = nan;
+cmin = inf;
+km = 1;
+for k=1:K
+    mink = min(C(k,:));
+    if mink<cmin
+        cmin = mink;
+        km = k;
+    end
 end
 
 if with_trend
-    Trend = real(2/max(sF)*sum(F(1:c-2*b,:)));
+    ckb = max([ones(1,N);C(km,:)-1.5*b]);
+    Trend = real(2/max(sF)*sum(F(1:ckb,:),1));
+    Trend = Trend(:);
 else
-    Trend = zeros(1,N);
+    Trend = zeros(N,1);
+end
+
+xk = x - Trend;
+
+[F,sF] = STFT_Gauss(xk,N,sigma,fmax);
+
+A = zeros(K,N);
+phi = zeros(K,N);
+r_max = zeros(K,1);
+for k=1:K
+    r_max(k) = floor(0.5*N/max(C(k,:)));
+    [A(k,:),phi(k,:)] = extract_harmonics(F,sF,C(k,:),b,b,1);
+end
+r_max(r_max>Rmax) = Rmax;
+
+if (max(C(:))<=0.5*N && sum(~isnan(C(:))))
+    if r_opt == 0
+        r_opt = order_optK(xk,r_max,A,phi,crit,crit_params);
+    end
+
+    for k=1:k
+        ck = C(k,:);
+        [ADk,phiDk] = extract_harmonics(F,sF,ck,b,b,r_opt(k));
+        AD = [AD; ADk];
+        phiD = [phiD; phiDk];
+    end
 end
 
 TFdata.F = F;
 TFdata.sigma = sigma;
 TFdata.fmax = fmax;
-TFdata.c = c;
-TFdata.b = b;
+TFdata.c = C;
 end
