@@ -60,7 +60,7 @@ for qi=1:Ni
 
     if Ki+Mi>Np
         Ki = floor(0.7*Np);
-        Mi = floor(0.3*Np)-1;
+        Mi = max([1,floor(0.3*Np)-1]);
     end
     %sp = s_imp(1:inti(1)-1);
 
