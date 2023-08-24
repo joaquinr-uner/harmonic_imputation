@@ -32,9 +32,9 @@ s = s(:);
 Ni = length(st);
 
 s_imp = s;
-%if ~isfolder([pn '/temp'])
-%    mkdir([pn '/temp'])
-%end
+if ~isfolder([pn '/temp'])
+    mkdir([pn '/temp'])
+end
 pn_temp = [pn '/temp/'];
 intp = 0;
 
