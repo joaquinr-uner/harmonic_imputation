@@ -3,7 +3,7 @@ function [x_imp,t_imp] = impute(x,st,L,method,params,verbose)
 % Wrapper function for imputation methods. Can be used to run
 % multiple imputation methods at once. Returns a matrix with each row
 % containing an imputed signal.
-
+%
 % Inputs:
 %         x: signal with missing data.
 %         st: initial indexes of missing data intervals.
