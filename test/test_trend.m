@@ -56,7 +56,7 @@ x(st3:ed3) = 0;
 [~,fh] = compute_sigma(x);
 plot(x)
 
-[sth,Lh] = missing_ints(x,0.01*fs,0);
+[sth,Lh] = missing_ints(x,struct('c','x','d',0.01*fs,'t',0));
 
 %params = struct('d',0.5);
 params = struct('path','/home/sentey/Dropbox/Github/harmonic_imputation');

@@ -1,5 +1,6 @@
 
 addpath(genpath('..'))
+addpath(genpath('/home/sentey/Dropbox/Github/MissingData_Real'))
 N = 4000;
 fs = 4000;
 rng(0)
@@ -53,7 +54,7 @@ x(st3:ed3) = 0;
 [~,fh] = compute_sigma(x);
 plot(x)
 
-[sth,Lh] = missing_ints(x,0.01*fs,0);
+[sth,Lh] = missing_ints(x,struct('c','x','d',0.01*fs,'t',0));
 
 params = struct();
 impf = impute_arimaf(x,sth,Lh,params);

@@ -57,7 +57,7 @@ x(st:ed) = 0;
 
 plot(x)
 
-[sth,Lh] = missing_ints(x,0.01*fs,0);
+[sth,Lh] = missing_ints(x,struct('c','x','d',0.01*fs,'t',0));
 
 [~,fh] = compute_sigma(true);
 Th = N/fh;

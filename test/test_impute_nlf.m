@@ -8,21 +8,17 @@ phi = 50*t + 5/(2*pi)*cos(2*pi*t);
 %phi = 100*t;
 A = ones(1,N);
 
-K = 2;
+K = 5;
 
 x = cos(2*pi*phi);
-%subs = {'Const','Bump','Tanh','Trigo'};
-subs = {'Const'};
+subs = {'Const','Bump','Tanh','Trigo'};
+%subs = {'Const'};
 for k=2:K
     haf = sample_haf(t,subs);
 
     x = x + haf.*cos(2*pi*k*phi);
 
 end
-
-plot(x)
-
-
 true = A.*x;
 
 true = true - mean(true);
@@ -53,9 +49,10 @@ x(st1:ed1) = 0;
 x(st2:ed2) = 0;
 x(st3:ed3) = 0;
 
+figure(1)
 plot(x)
 
-[sth,Lh] = missing_ints(x,0.01*fs,0);
+[sth,Lh] = missing_ints(x,struct('c','x','d',0.01*fs,'t',0));
 
 [~,fh] = compute_sigma(true);
 Th = N/fh;
@@ -79,7 +76,7 @@ errors_dmd = compute_errors(true,imp_dmd,sth,Lh,{'mae','mse','rmse','sim'});
 errors_gpr = compute_errors(true,imp_gpr,sth,Lh,{'mae','mse','rmse','sim'});
 errors_edmd = compute_errors(true,imp_edmd,sth,Lh,{'mae','mse','rmse','sim'});
 
-figure(1)
+figure(2)
 subplot(221)
 plot(t,true,'r-')
 hold on

@@ -65,7 +65,7 @@ x(st:ed) = 0;
 [~,fh] = compute_sigma(x);
 plot(x)
 
-[sth,Lh] = missing_ints(x,0.005*fs,0);
+[sth,Lh] = missing_ints(x,struct('c','x','d',0.01*fs,'t',0));
 
 %params = struct('pn','/home/sentey/Dropbox/Github/harmonic_imputation/impute_methods/aux-functs');
 params = struct();

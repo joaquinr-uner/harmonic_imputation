@@ -42,10 +42,10 @@ end
 fh = fh*fs/N;
 plot(x)
 
-[sth,Lh] = missing_ints(x,0.01*fs,0);
+[sth,Lh] = missing_ints(x,struct('c','x','d',0.01*fs,'t',0));
 
 params = struct('D',K,'fh',fh,'fs',fs);
-imp = impute_ddtfa(x,sth,Lh);
+imp = impute_ddtfa(x',sth,Lh);
 
 errors_ref = compute_errors(true,x,sth,Lh,{'mae','mse','rmse','sim'});
 errors = compute_errors(true,imp,sth,Lh,{'mae','mse','rmse','sim'});
