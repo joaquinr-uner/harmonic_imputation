@@ -24,7 +24,7 @@ function [AD,phiD,Trend,TFdata] = harm_decomp(x,params)
 %                'with_trend': logical variable to indicate if the signal trend
 %                has to be recovered. 
 if nargin<2
-    sigma = compute_sigma(x,1);
+    sigma = compute_sigma(x,2);
     %b = round(sqrt(log(80)*sigma/pi^2)*length(x)) + 1;
     b = round(3/pi*sqrt(sigma/2)*length(x));
     fmax = 0.5;
@@ -38,7 +38,7 @@ else
     if isfield(params,'sigma')
         sigma = params.sigma;
     else
-        sigma = compute_sigma(x,1);
+        sigma = compute_sigma(x,2);
     end
     if isfield(params,'b')
         b = params.b;
@@ -83,7 +83,7 @@ else
         K = 1;
     end
     if isfield(params,'r_opt')
-        K = params.r_opt;
+        r_opt = params.r_opt;
     else
         r_opt = 0;
     end
