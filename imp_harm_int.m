@@ -1,4 +1,4 @@
-function [s_imp,trend_imp,s_int,trend_int,bestM] = imp_harm_int(s,varargin)
+function [s_imp,trend_imp,s_int,trend_int,bestM, A_int, phi_int,TFData] = imp_harm_int(s,varargin)
 %%
 % Compute the harmonic decomposition of signal x.
 % Inputs: 
@@ -29,14 +29,15 @@ function [s_imp,trend_imp,s_int,trend_int,bestM] = imp_harm_int(s,varargin)
 %
 
 p = inputParser;
-addOptional(p,'Int',"Off");
-addOptional(p,'Best',"Off");
+addOptional(p,'Int','Off');
+addOptional(p,'Best','Off');
 addOptional(p,'True',0);
 addOptional(p,'ImpM','tlm');
 addOptional(p,'params_mss',struct());
 addOptional(p,'params_imp',struct());
 addOptional(p,'params_decomp',struct());
 addOptional(p,'IntM',{'pchip'});
+addOptional(p,'params_missints',struct());
 parse(p,varargin{:})
 
 if isfield(p.Results.params_mss,'st') && isfield(p.Results.params_mss,'L')
@@ -53,12 +54,12 @@ else
     else
         t = 0;
     end
-    [st,L] = missing_ints(s,d,t);
+    [st,L] = missing_ints(s,p.Results.params_missints);
 end
 
 s_imp = impute(s,st,L,p.Results.ImpM,p.Results.params_imp);
 
-if p.Results.Best== "on"
+if strcmpi(p.Results.Best,'on')
     mse_imp = zeros(1,size(s_imp));
 
     for k=1:size(s_imp,1)
@@ -69,21 +70,26 @@ if p.Results.Best== "on"
 
     s_imp = s_imp(bestM,:);
 
+else
+    bestM = 0;
 end
 
-if  lower(p.Results.Int) == "on"
+if  strcmpi(p.Results.Int,'on')
     K = size(s_imp,1);
     M = size(p.Results.IntM,2);
 
     s_int = zeros(M*K,length(s));
     trend_int = zeros(M*K,length(s));
+    A_int = cell(1,M*K);
+    phi_int = cell(1,M*K);
     for k=1:size(s_imp,1)
         si = s_imp(k,:)';
-        [AD,phiD,trend_imp] = harm_decomp(si, p.Results.params_decomp);
+        [AD,phiD,trend_imp,TFData] = harm_decomp(si, p.Results.params_decomp);
         for m=1:M
             intmm =  p.Results.IntM{m};
 
-            [s_int((k-1)*M+m,:),trend_int((k-1)*M+m,:)] = harm_int(AD,phiD,st,L,intmm,si,trend_imp);
+            [s_int((k-1)*M+m,:),trend_int((k-1)*M+m,:),...
+             A_int{(k-1)*M+m},phi_int{(k-1)*M+m}] = harm_int(AD,phiD,st,L,intmm,si,trend_imp);
         end
     end
 end

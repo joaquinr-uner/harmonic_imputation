@@ -24,7 +24,7 @@ function [AD,phiD,Trend,TFdata] = harm_decomp(x,params)
 %                'with_trend': logical variable to indicate if the signal trend
 %                has to be recovered. 
 if nargin<2
-    sigma = compute_sigma(x,2);
+    sigma = compute_sigma(x,1);
     %b = round(sqrt(log(80)*sigma/pi^2)*length(x)) + 1;
     b = round(3/pi*sqrt(sigma/2)*length(x));
     fmax = 0.5;
@@ -38,7 +38,7 @@ else
     if isfield(params,'sigma')
         sigma = params.sigma;
     else
-        sigma = compute_sigma(x,2);
+        sigma = compute_sigma(x,1);
     end
     if isfield(params,'b')
         b = params.b;
@@ -95,6 +95,11 @@ C = zeros(K,N);
 
 AD = [];
 phiD = [];
+
+if sigma==0
+    sigma = compute_sigma(x,1);
+end
+
 [F,sF] = STFT_Gauss(x,N,sigma,fmax);
 f = 0:1/N:fmax-1/N;
 U = istct_fast(F,f,0.3,0.3);
@@ -128,16 +133,16 @@ for k=1:K
 end
 
 if with_trend
-    ckb = max([ones(1,N);C(km,:)-1.5*b]);
+    ckb = max([ones(1,N);C(km,:)-2*b]);
     Trend = real(2/max(sF)*sum(F(1:ckb,:),1));
     Trend = Trend(:);
+    x = x - Trend;
+
+    [F,sF] = STFT_Gauss(x,N,sigma,fmax);
 else
     Trend = zeros(N,1);
 end
 
-xk = x - Trend;
-
-[F,sF] = STFT_Gauss(xk,N,sigma,fmax);
 
 A = zeros(K,N);
 phi = zeros(K,N);
@@ -150,7 +155,7 @@ r_max(r_max>Rmax) = Rmax;
 
 if (max(C(:))<=0.5*N && sum(~isnan(C(:))))
     if r_opt == 0
-        r_opt = order_optK(xk,r_max,A,phi,crit,crit_params);
+        r_opt = order_optK(x,r_max,A,phi,crit,crit_params);
     end
 
     for k=1:k

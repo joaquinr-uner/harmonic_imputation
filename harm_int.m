@@ -27,7 +27,6 @@ Ni = length(L);
 r = size(A,1);
 
 ed = st + L - 1;
-
 for i=1:Ni
     Li = L(i);
     sti = st(i);
@@ -54,24 +53,22 @@ for i=1:Ni
         Aq = A(j,xq);
         phiq = phi(j,xq);
 
+
         Ai = interp1(xq,Aq,1:N,intp);
         phii = interp1(xq,phiq,1:N,intp);
         A(j,sti:edi) = Ai(sti:edi);
         phi(j,sti:edi) = phii(sti:edi);
         s_int(sti:edi) = s_int(sti:edi) + 2*A(j,sti:edi)'.*cos(2*pi*phi(j,sti:edi))';
-
     end
     trendq = trend(xq);
-
-    trendi = interp1(xq,trendq,1:N,intp);
-    trend_int(sti:edi) = trendi(sti:edi);
-    %trend_int(sti:edi) = trend(sti:edi);
+    if sum(abs(trend))== 0
+        trend_int = trend;
+    else
+        trendi = interp1(xq,trendq,[lint(1):rint(end)],intp);
+        trend_int(sti:edi) = trendi(length(lint)+1:length(lint)+1+Li-1);
+    end
     s_int(sti:edi) = s_int(sti:edi) + trend_int(sti:edi);
 end
-    A_int = A;
-    phi_int = phi;
-
+A_int = A;
+phi_int = phi;
 end
-
-
-
