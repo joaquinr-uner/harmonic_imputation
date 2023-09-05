@@ -83,7 +83,7 @@ for qi=1:Ni
 
     %saveR('temp/MissingSamples.R','si','T','sti','Li','Ni')
     name = tempname(pn_temp);
-    saveR([name '.R'],'si','T','sti','Li','Ni','j')
+    saveR([name '.R'],'si','Ti','sti','Li','Ni','j')
     %CurrentDirectory=strrep(pwd,'\','/');
 
     evalc(['!/usr/bin/Rscript ' pn '/RunTBATS.R ' name '.R']);

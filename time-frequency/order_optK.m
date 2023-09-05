@@ -76,7 +76,7 @@ for i=1:length(criteria)
                 if isfield(params,'H')
                     H = params.H;
                 else
-                    rc = round(log(N)^2);
+                    H = round(log(N)^2);
                 end
             end
             Kv = zeros(prod(r_max),H);

@@ -13,6 +13,7 @@ function [s_imp] = impute_arimaf(s,st,L,params)
 % Outputs:
 %         s_imp: signal with imputed values.
 if nargin<4
+    sigma = 0;
     cycl = 3;
     fmax = 0.5;
     redun = 1;
