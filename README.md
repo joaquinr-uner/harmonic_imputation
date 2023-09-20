@@ -19,7 +19,7 @@ The main functions included in this module are briefly described below. Refer to
 
 <code>harm_int</code>: Interpolate at the harmonic level using one of the two possible interpolation schemes: 'spline' or 'pchip'.
 
-<code>impute_harm_int</code>: Global functions that runs all steps of the algorithm sequentially. Flags can be set to only run the initial imputation result.
+<code>impute_harm_int</code>: Global function that runs all steps of the algorithm sequentially. Flags can be set to only run the initial imputation result.
 
 
 
