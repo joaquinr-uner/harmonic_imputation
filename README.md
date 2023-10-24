@@ -44,9 +44,9 @@ In addition, new imputation methods can be passed as inputs of the <code>impute<
 
 ## Trend Separation and Harmonic Decomposition
 
-The initially imputed signal is decomposed using the <code>harm_decomp<\code> function by computing its spectrogram and reconstructing each harmonic AM-FM component of the signal by way of spectrogram ridge detection and band-limited reconstruction. Likewise, the trend component of the signal is extracted by time-varying low-pass filtering of the imputed signal.
+The initially imputed signal is decomposed using the <code>harm_decomp</code> function by computing its spectrogram and reconstructing each harmonic AM-FM component of the signal by way of spectrogram ridge detection and band-limited reconstruction. Likewise, the trend component of the signal is extracted by time-varying low-pass filtering of the imputed signal.
 Parameters for the harmonic decomposition include STFT window length, reconstruction band-width and number of harmonic components K.
 
 ## Interpolation at the Harmonic Level
 
-The harmonic amplitude and phases of the imputed signal are obtained from the extracted modes and an enhanced imputation is obtained by direct interpolation of the amplitudes and phases using the <code>harm_int<\code> function. Different interpolation schemes can be applied to this task, including linear, cubic spline and cubic hermite function (pchip) interpolation. 
+The harmonic amplitude and phases of the imputed signal are obtained from the extracted modes and an enhanced imputation is obtained by direct interpolation of the amplitudes and phases using the <code>harm_int</code> function. Different interpolation schemes can be applied to this task, including linear, cubic spline and cubic hermite function (pchip) interpolation. 
