@@ -29,16 +29,16 @@ The missing data intervals are located using the function <code>missing_ints</co
 
 The initial imputation is performed using the function <code>impute</code>, by passing the missing data signal and missing data intervals as parameters. A series of missing data imputation procedures are implemented:
 
-\item Takens' Lag Map (TLM).
-\item Dynamical System Forecasting by Least-Square Estimation (LSE).
-\item Dynamical Mode Decomposition (DMD).
-\item Extended Dynamical Mode Decomposition (EDMD).
-\item Gaussian Process Regression (GPR).
-\item ARIMA Forecasting with Forward Step (ARIMAF).
-\item ARIMA Forecasting with Backward Step (ARIMAB).
-\item Trigonometric Box-Cox, ARMA and Seasonal Modelling (TBATS).
-\item Sparse Time-Frequency Non-linear Matching Pursuit (STF).
-\item Locally Stationary Wavelet Process (LSW).
+* Takens' Lag Map (TLM).
+* Dynamical System Forecasting by Least-Square Estimation (LSE).
+* Dynamical Mode Decomposition (DMD).
+* Extended Dynamical Mode Decomposition (EDMD).
+* Gaussian Process Regression (GPR).
+* ARIMA Forecasting with Forward Step (ARIMAF).
+* ARIMA Forecasting with Backward Step (ARIMAB).
+* Trigonometric Box-Cox, ARMA and Seasonal Modelling (TBATS).
+* Sparse Time-Frequency Non-linear Matching Pursuit (STF).
+* Locally Stationary Wavelet Process (LSW).
 
 In addition, new imputation methods can be passed as inputs of the <code>impute</code> function. This methods have to follow the input/output structure of the already implemented methods. See the function documentation for more details.
 
