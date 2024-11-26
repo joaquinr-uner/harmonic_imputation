@@ -61,21 +61,21 @@ for qi=1:Ni
 
     load([name '.R.mat'],'imp')
         
-%    p = prctile(imp,95);
-% 
-%     for j=1:Li
-%         if imp(j)>p
-%             if j<Li 
-%                 if j>1
-%                     imp(j) = (imp(j-1)+imp(j+1))/2;
-%                 else
-%                     imp(j) = imp(j+1);
-%                 end
-%             else
-%                 imp(j) = imp(j-1);
-%             end
-%         end
-%     end
+   p = prctile(imp,95);
+
+    for j=1:Li
+        if imp(j)>p
+            if j<Li 
+                if j>1
+                    imp(j) = (imp(j-1)+imp(j+1))/2;
+                else
+                    imp(j) = imp(j+1);
+                end
+            else
+                imp(j) = imp(j-1);
+            end
+        end
+    end
     s_imp(inti) = imp - mean(imp);
     intp = inti;
 end
