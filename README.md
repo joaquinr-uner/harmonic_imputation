@@ -19,10 +19,35 @@ The main functions included in this module are briefly described below. Refer to
 
 <code>harm_int</code>: Interpolate at the harmonic level using one of the two possible interpolation schemes: 'spline' or 'pchip'.
 
-<code>impute_harm_int</code>: Global functions that runs all steps of the algorithm sequentially. Flags can be set to only run the initial imputation result.
+<code>impute_harm_int</code>: Global function that runs all steps of the algorithm sequentially. Flags can be set to only run the initial imputation result.
 
+## Initial Data Imputation
 
+The first stage of the proposed algorithm includes the detection of the missing data intervals and the initial imputation performed used one of the previously implemented methods.
 
+The missing data intervals are located using the function <code>missing_ints</code>. The input parameters of this function are the signal under study and the type of missing data to be detected. Additionally, the missing data detection can be fine-tuned by incorporating additional parameters. See the function documentation for more details.
 
+The initial imputation is performed using the function <code>impute</code>, by passing the missing data signal and missing data intervals as parameters. A series of missing data imputation procedures are implemented:
 
+* Takens' Lag Map (TLM).
+* Dynamical System Forecasting by Least-Square Estimation (LSE).
+* Dynamical Mode Decomposition (DMD).
+* Extended Dynamical Mode Decomposition (EDMD).
+* Gaussian Process Regression (GPR).
+* ARIMA Forecasting with Forward Step (ARIMAF).
+* ARIMA Forecasting with Backward Step (ARIMAB).
+* Trigonometric Box-Cox, ARMA and Seasonal Modelling (TBATS).
+* Sparse Time-Frequency Non-linear Matching Pursuit (STF).
+* Locally Stationary Wavelet Process (LSW).
 
+In addition, new imputation methods can be passed as inputs of the <code>impute</code> function. This methods have to follow the input/output structure of the already implemented methods. See the function documentation for more details.
+
+## Trend Separation and Harmonic Decomposition
+
+The initially imputed signal is decomposed using the <code>harm_decomp</code> function by computing its spectrogram and reconstructing each harmonic AM-FM component of the signal by way of spectrogram ridge detection and band-limited reconstruction. Likewise, the trend component of the signal is extracted by time-varying low-pass filtering of the imputed signal.
+Parameters for the harmonic decomposition include STFT window length, reconstruction band-width and number of harmonic components K.
+
+## Interpolation at the Harmonic Level
+
+The harmonic amplitude and phases of the imputed signal are obtained from the extracted modes and an enhanced imputation is obtained by direct interpolation of the amplitudes and phases using the <code>harm_int</code> function. Different interpolation schemes can be applied to this task, including linear, cubic spline and cubic hermite function (pchip) interpolation. 
+>>>>>>> 0acdaed6af950c83efcc6d7ffef26cd20c7e537c
