@@ -1,14 +1,15 @@
-addpath(genpath('C:\Users\Intel\Dropbox\Github'))
+%addpath(genpath('C:\Users\Intel\Dropbox\Github'))
+addpath(genpath('/home/sentey/Dropbox/Github/harmonic_imputation'))
 fs = 4000;
 N = 4000;
 rng(0)
 t = 0:1/fs:(N-1)/fs;
-f0 = 50;
+f0 = 30;
 %phi = f0*t + 5/(2*pi)*cos(2*pi*t);
 phi = f0*t;
 A = ones(1,N);
 
-K = 2;
+K = 5;
 
 x = cos(2*pi*phi);
 subs = {'Const'};
@@ -21,7 +22,7 @@ for k=2:K
     x = x + haf.*cos(2*pi*e(k)*phi);
 
 end
-Mdl = arima('Constant',0.5,'AR',{0.7 0.25},'Variance',.1);
+%Mdl = arima('Constant',0.5,'AR',{0.7 0.25},'Variance',.1);
 
 %x = simulate(Mdl,N)';
 plot(x)
@@ -35,7 +36,7 @@ true = true + trend;
 
 true = true - mean(true);
 
-L = round(0.1*N);
+L = round(0.2*N);
 
 true = true';
 SNR = Inf;
@@ -44,23 +45,23 @@ Lmin = round(L/4);
 Lmax = round(L/2);
 
 st = 0.5*N;
-%st1 = round(N/4-0.05*N) + randi(0.1*N);
-%st2 = round(N/2-0.05*N) + randi(0.1*N);
-%st3 = round(3*N/4-0.05*N) + randi(0.1*N);
+st1 = round(N/4-0.05*N) + randi(0.1*N);
+st2 = round(N/2-0.05*N) + randi(0.1*N);
+st3 = round(3*N/4-0.05*N) + randi(0.1*N);
 
 N = length(true);
 x = true;
 
 ed = st + L - 1;
-%Ll = floor(randfixedsum(3,1,L,Lmin,Lmax)');
-%ed1 = st1 + Ll(1) - 1;
-%ed2 = st2 + Ll(2) - 1;
-%ed3 = st3 + Ll(3) - 1;
+Ll = floor(randfixedsum(3,1,L,Lmin,Lmax)');
+ed1 = st1 + Ll(1) - 1;
+ed2 = st2 + Ll(2) - 1;
+ed3 = st3 + Ll(3) - 1;
 
-x(st:ed) = 0;
-%x(st1:ed1) = 0;
-%x(st2:ed2) = 0;
-%x(st3:ed3) = 0;
+%x(st:ed) = 0;
+x(st1:ed1) = 0;
+x(st2:ed2) = 0;
+x(st3:ed3) = 0;
 
 [~,fh] = compute_sigma(x);
 plot(x)

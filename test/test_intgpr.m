@@ -4,8 +4,9 @@ N = 2000;
 fs = 2000;
 rng(0)
 t = 0:1/fs:(N-1)/fs;
-%phi = 50*t + 5/(2*pi)*cos(2*pi*t);
-phi = 50*t;
+%phi = 50*t + 2.5/(2*pi)*cos(2*pi*t);
+phi = 50*t + 5*t.^2;
+%phi = 50*t;
 A = ones(1,N);
 
 K = 1;
@@ -63,8 +64,12 @@ params_imp = struct();
 x_imp = impute(x,sth,Lh,{'tlm'});
 
 [AD,phiD] = harm_decomp(x_imp');
+%[AD,phiD] = harm_decomp(x');
 tic
-x_int = harm_int(AD,phiD,sth,Lh,'gpr',x_imp');
+kern = 'exponential';
+%kern = 'squaredexponential';
+%kern = 'matern52';
+x_int = harm_int_gpr(AD,phiD,sth,Lh,'gpr',x_imp',zeros(size(x)),kern);
 t_intgpr = toc;
 figure(1)
 plot(x,'k')
@@ -74,3 +79,7 @@ plot(x_imp,'r')
 plot(x_int,'g')
 hold off
 legend('missing','org','imp','int')
+
+err_ref = compute_errors(true,x,sth,Lh,'mae');
+err_imp = compute_errors(true,x_imp,sth,Lh,'mae');
+err_igpr = compute_errors(true,x_int,sth,Lh,'mae');
