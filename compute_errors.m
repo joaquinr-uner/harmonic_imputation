@@ -3,7 +3,7 @@ if nargin<6
     n = 'off';
 end
 if nargin<5
-    metric = {'mae'};
+    metric = 'mae';
 else
     if ~iscell(metric)
         metric = {metric};
@@ -81,3 +81,4 @@ for m=1:M
             error(['Unknown Performance Metric "' metr '"'])
     end
 end
+

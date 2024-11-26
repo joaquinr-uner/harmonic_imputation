@@ -31,7 +31,7 @@ if isfield(params,'d')
     d = params.d;
 else
     %b = round(sqrt(log(80)*sigma/pi^2)*length(x)) + 1;
-    d = 0.01*length(s);
+    d = round(0.01*length(s));
 end
 if isfield(params,'t')
     t = params.t;

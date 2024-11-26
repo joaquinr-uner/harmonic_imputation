@@ -1,4 +1,4 @@
-function alp = sample_haf(t,subs,n)
+function ALP = sample_haf(t,subs,n)
 
 if nargin<3
     n = 1;
@@ -23,8 +23,8 @@ switch s
         coefs = rand(1,4);
         coefs = coefs/sum(coefs)-0.1;
         alp = 0;
-        for k=1:ord
-            alp = alp + coefs(k)*(t/t(end)).^k;
+        for j=1:ord
+            alp = alp + coefs(j)*(t/t(end)).^j;
         end
 
     case 'Trigo'

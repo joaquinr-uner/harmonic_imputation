@@ -1,5 +1,4 @@
-function [s_imp,trend_imp,s_int,trend_int,bestM, A_int, phi_int,TFData] = imp_harm_int(s,varargin)
-%%
+p %%
 % Compute the harmonic decomposition of signal x.
 % Inputs: 
 %         s: signal under analysis
