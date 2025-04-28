@@ -50,4 +50,8 @@ Parameters for the harmonic decomposition include STFT window length, reconstruc
 ## Interpolation at the Harmonic Level
 
 The harmonic amplitude and phases of the imputed signal are obtained from the extracted modes and an enhanced imputation is obtained by direct interpolation of the amplitudes and phases using the <code>harm_int</code> function. Different interpolation schemes can be applied to this task, including linear, cubic spline and cubic hermite function (pchip) interpolation. 
->>>>>>> 0acdaed6af950c83efcc6d7ffef26cd20c7e537c
+
+
+#IMPORTANT! Running R scripts using matlab
+
+Some impute methods (namely, TBATS and LSW) are implemented in R. In order to run these methods, R version 2.14.0 or above has to be installed in the 'usr/bin' repository (Ubuntu) and the R.matlab ([Link](guides/content/editing-an-existing-page](https://cran.r-project.org/web/packages/R.matlab/index.html)) repository has to be installed. For more information about running R scripts in Matlab, plase refer to (https://nonlinear.wtu.edu.cn/info/1085/1055.htm).
