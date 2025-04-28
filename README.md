@@ -54,4 +54,4 @@ The harmonic amplitude and phases of the imputed signal are obtained from the ex
 
 # IMPORTANT! Running R scripts using matlab
 
-Some impute methods (namely, TBATS and LSW) are implemented in R. In order to run these methods, R version 2.14.0 or above has to be installed in the 'usr/bin' repository (Ubuntu) and the R.matlab ([Link](guides/content/editing-an-existing-page](https://cran.r-project.org/web/packages/R.matlab/index.html)) repository has to be installed. For more information about running R scripts in Matlab, plase refer to (https://nonlinear.wtu.edu.cn/info/1085/1055.htm).
+Some impute methods (namely, TBATS and LSW) are implemented in R. In order to run these methods, R version 2.14.0 or above has to be installed in the 'usr/bin' repository (Ubuntu) and the R.matlab ([Link](https://cran.r-project.org/web/packages/R.matlab/index.html)) repository has to be installed. For more information about running R scripts in Matlab, plase refer to (https://nonlinear.wtu.edu.cn/info/1085/1055.htm).
